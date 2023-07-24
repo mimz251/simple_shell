@@ -1,2 +1,1 @@
-# simple_shell
-Our first amazing project (Maryanne &amp; Meme
+ we created a shell that runs shell commands
