@@ -2,19 +2,23 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <shell.h>
+
 #define max_command_length 200
+
 /**
  * main -  function that allows the cd command to work in shell
  * Return: 0 success
  */
 int main(void)
 {
+	sstream ss;
 	char command[max_command_length];
 
 	while (1)
 	{
 		printf("$ ");
-		fgets(command, sizeof(command), stdin);
+		ss(command, sizeof(command), stdin);
 
 		command[strcspn(command, "\n")] = '\0';
 

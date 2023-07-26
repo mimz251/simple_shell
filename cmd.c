@@ -2,6 +2,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <shell.h>
+
 /**
  * main - the function that runs the cmmand line argument
  * @av: argument vector

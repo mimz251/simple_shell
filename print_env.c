@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#inclde <shell.h>
 
-extern char **environ;
-
-/* Function to print all environment variables*/
-void print_environment()
+/**
+ * main - entry point
+ * Return: 0 success
+ */
+void print_environment(void)
 {
 	for (int i = 0; environ[i] != NULL; i++)
 	{
@@ -13,14 +15,15 @@ void print_environment()
 	}
 }
 
-int main()
+int main(void)
 {
+	sstream ss;
 	char command[1000];
 
 	while (1)
 	{
 		printf("$ ");
-		fgets(command, sizeof(command), stdin);
+		ss(command, sizeof(command), stdin);
 		command[strcspn(command, "\n")] = '\0';
 
 		if (strcmp(command, "exit") == 0)
@@ -34,6 +37,7 @@ int main()
 		else
 		{
 			int status = system(command);
+
 			if (status != 0)
 			{
 				printf("Command execution failed.\n");
