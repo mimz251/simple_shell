@@ -3,10 +3,12 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <stdlib.h>
-/*
- * main - entry point
+/**
+ * main - this allows the system call wait
  * wait: system call
  * pid_t: stores process ids
+ * Return: 0 successful
+ * else -1 unsuccessful
  */
 int main(void)
 {
@@ -25,7 +27,7 @@ int main(void)
 	}
 	else
 	{
-		wait (NULL);
+		wait(NULL);
 		sleep(10);
 		printf("Parent process\n");
 	}
