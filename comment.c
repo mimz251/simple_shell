@@ -2,19 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 #define max_command_length 200
-
+#include <shell.h>
 /**
  * main - this function allows a comment in the shell
  * Return: 0
  */
 int main(void)
 {
+	sstream ss;
 	char command[max_command_length];
 
 	while (1)
 	{
 		printf("$ ");
-		fgets(command, sizeof(command), stdin);
+		ss(command, sizeof(command), stdin);
 
 		command[strcspn(command, "\n")] = '\0';/*removes trailing space*/
 

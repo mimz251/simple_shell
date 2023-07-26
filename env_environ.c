@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <shell.h>
 
-/*
- * main - entry point
+/**
+ * main - compares variables for env and environ
  * @av: argument vector
  * @ac: argument counter
  * @env: environment variable
+ * Return: 0 success
  */
-extern char **environ;
 
-int main(int argc, char *argv[], char *env[]) 
+int main(int ac, char *av[], char *env[])
 {
 	printf("Address of env : %p\n", (void *)env);
 	printf("Address of environ: %p\n", (void *)environ);

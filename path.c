@@ -1,8 +1,13 @@
-#include <dirent.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <shell.h>
 
+/**
+ * main - entry point
+ * Return: 0 success
+ * else 1 failure
+ */
 int main(void)
 {
 	/*accessing the directory*/

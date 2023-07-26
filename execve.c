@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
-
+#include <shell.h>
 /**
  * main - function that handles the execution process in shell
  * Return: 0 success

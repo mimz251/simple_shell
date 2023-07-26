@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <shell.h>
 
 #define max_command_length 200
 
@@ -15,7 +16,7 @@ int main(void)
 	while (1)
 	{
 		printf("$ ");
-		fgets(command, sizeof(command), stdin);
+		sstream(command, sizeof(command), stdin);
 
 		command[strcspn(command, "\n")] = '\0';
 		/* Remove trailing newline from the command*/

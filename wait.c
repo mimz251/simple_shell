@@ -3,6 +3,8 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <stdlib.h>
+#include <shell.h>
+
 /**
  * main - this allows the system call wait
  * wait: system call

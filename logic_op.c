@@ -2,13 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <shell.h>
 
-int main()
+int main(void)
 {
+	sstream ss;
 	char command[1000];
 
 	printf("Enter: ");
-	fgets(command, sizeof(command), stdin);
+	ss(command, sizeof(command), stdin);
 
 	char *token = strtok(command, "&|");
 	int last_status = 0;
@@ -16,12 +18,14 @@ int main()
 	while (token != NULL)
 	{
 		int start = 0;
+
 		while (token[start] == ' ' || token[start] == '\t')
 		{
 			start++;
 		}
 
 		int end = strlen(token) - 1;
+
 		while (end >= start && (token[end] == ' ' || token[end] == '\t' || token[end] == '\n'))
 		{
 			token[end] = '\0';
@@ -31,6 +35,7 @@ int main()
 		if (strlen(token) > 0)
 		{
 			int status = system(token);
+
 			last_status = status;
 		}
 
