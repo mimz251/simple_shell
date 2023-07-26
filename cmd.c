@@ -2,14 +2,15 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
-/*
- * main - the entry point
- * av: argument vector
- * ac: argument counter
+/**
+ * main - the function that runs the cmmand line argument
+ * @av: argument vector
+ * @ac: argument counter
+ * Return: 0 success
  */
 int main(int ac, char *av[])
 {
-	printf("arguments entered are: %d\n",ac);
+	printf("arguments entered are: %d\n", ac);
 
 	for (int b = 0; b < ac; b++)
 		printf("av[%d]=%s\n", b, av[b]);
