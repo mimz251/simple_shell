@@ -3,8 +3,11 @@
 #include <unistd.h>
 #include <string.h>
 #define max_command_length 200
-
-int main()
+/**
+ * main -  function that allows the cd command to work in shell
+ * Return: 0 success
+ */
+int main(void)
 {
 	char command[max_command_length];
 
@@ -21,11 +24,11 @@ int main()
 		}
 		else if (strncmp(command, "cd ", 3) == 0)
 		{
-			const char* path = command + 3;
+			const char *path = command + 3;
 
 			if (strcmp(path, "-") == 0)
 			{
-				const char* prev_dir = getenv("OLDPWD");
+				const char *prev_dir = getenv("OLDPWD");
 
 				if (prev_dir != NULL)
 				{
@@ -39,8 +42,9 @@ int main()
 			}
 
 			if (chdir(path) == 0)
-			{    
+			{
 				char current_dir[max_command_length];
+
 				if (getcwd(current_dir, sizeof(current_dir)) != NULL)
 				{
 					setenv("PWD", current_dir, 1);
@@ -50,6 +54,7 @@ int main()
 					perror("getcwd");
 				}
 				char prev_dir[max_command_length];
+
 				if (getenv("PWD") != NULL)
 				{
 					strncpy(prev_dir, getenv("PWD"), sizeof(prev_dir));
@@ -64,6 +69,7 @@ int main()
 		else
 		{
 			int status = system(command);
+
 			if (status != 0)
 			{
 				printf("Command failed.\n");
