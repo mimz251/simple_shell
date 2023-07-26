@@ -3,6 +3,10 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+/**
+ * main - function that handles the execution process in shell
+ * Return: 0 success
+ */
 int main(void)
 {
 	pid_t pid;
@@ -17,7 +21,8 @@ int main(void)
 	if (pid == 0)
 	{
 		int val = execve(av[0], av, NULL);
-		if (val ==-1)
+
+		if (val == -1)
 			perror("Error");
 	}
 	else
