@@ -9,10 +9,10 @@
 
 int main(void)
 {
-        int m = 8;
-        int n = 10;
-        int sum = (m + n);
+	int m = 8;
+	int n = 10;
+	int sum = (m + n);
 
-        printf("sum is %d\n", sum);
-        return (0);
+	printf("sum is %d\n", sum);
+	return (0);
 }
