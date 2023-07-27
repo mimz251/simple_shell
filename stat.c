@@ -2,7 +2,6 @@
 #include<sys/stat.h>
 #include<fcntl.h>
 #include<stdlib.h>
-#include <shell.h>
 /**
  * main - function that gives the status of the environment entered
  * Return: 0 success

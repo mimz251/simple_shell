@@ -4,39 +4,35 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <dirent.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
 
 #define max_command_length 200
-#define READ_BUF_SIZE 1024
-#define WRITE_BUF_SIZE 1024
-#define BUF_FLUSH -1
-
 
 extern char **environ;
 
 /* cd.c */
-char command[max_command_length];
-sstream ss;
-const char *prev_dir = getenv();
-char current_dir[max_command_length];
-char prev_dir[max_command_length];
-int status = system(command);
-
+char *command = NULL;
+size_t bufsize;
+char *arg = token;
+char *token = strtok(command, " ");
+char *cmd = token;
+char *prev_dir = getenv("OLDPWD");
+char *getcwd(char *buf, size_t size);
 /* cmd.c */
 int main(int ac, char *av[]);
 
 /* comment.c */
-char command[max_command_length];
+char *command;
+size_t bufsize;
 char *comment_pos = strchr();
- int status = system(command);
+int status = system();
 
 /* delim.c */
 
-/* env_environ.c  */
-int main(int ac, char *av[], char *env[];
 
 /* execve.c */
 pid_t pid;
@@ -45,35 +41,42 @@ int val = execve(av[0], av, NULL);
 
 /* exit.c  */
 char command[max_command_length];
-int status = system(command);
 
 /* logic_op.c */
-char command[1000];
-sstream ss;
-char *token = strtok();
-int status = system(token);
+int execute_command(char *);
+char *command;
+size_t bufsize;
+char* token = strtok();
+int result(); 
 
 /* path.c */
- DIR *directory;
- struct dirent *entry;
+struct PathNode{char *directory, struct PathNode *next}
+void free_path_list(struct PathNode* head)
+ char* path_env = getenv();
+struct PathNode *head;
+struct PathNode *tail;
+char *path_copy = strdup(path_env);
+struct PathNode *new_node();
+struct PathNode *current;
+char *path_token = strtok();
 
 /* ppid.c */
 pid_t pid;
 pid_t ppid;
 
 /* print_env.c */
-void print_environment(void);
-char command[1000];
+char* command = NULL;
+size_t bufsize = 0;
+char **env_var = environ;
 int status = system(command);
-sstream ss;
-
 /* read.c */
 
 /* separator.c */
-char command[1000];
-char *token = strtok();
-sstream ss;
-int status = system(token);
+void execute_command(const char* command);
+int status = system();
+char *command = NULL;
+size_t bufsize;
+char* token = strtok();
 
 /* stat.c */
 void sfile(char const filename[]);
@@ -86,13 +89,13 @@ int s = open(buffer,O_RDONLY);
 pid_t pid;
 
 /* var_rep.c */
-void replace_variables(char *command);
-char command[max_command_length];
-char* token = strtok();
-replace_variables(command);
-int status = system(command);
-void sfile(char const filename[]);
-struct stat sfile;
+
+void replace_variables(char *command, int exit_status, int pid);
+char *token = strtok();
+char *command;
+size_t bufsize;
+int status = 0;
+int exit_status = WEXITSTATUS();
 
 /* strcspn.c */
 

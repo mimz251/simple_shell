@@ -2,49 +2,46 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <shell.h>
 
+#define max_command_length 200
 /**
  * main - function that handles the separator used in shell
  * Return: 0 success
  */
+
+void execute_command(const char *command)
+{
+	int status = system(command);
+
+	if (status != 0)
+	{
+		printf("Command execution failed.\n");
+	}
+}
+
 int main(void)
 {
-	sstream ss;
-	char command[1000];
+	char *command = NULL;
+	size_t bufsize = 0;
 
-	printf(": ");
-	fgets(command, sizeof(command), stdin);
-
-	char *token = strtok(command, ";");
-
-	while (token != NULL)
+	while (1)
 	{
-		int start = 0;
-
-		while (token[start] == ' ' || token[start] == '\t')
+		printf("$ ");
+		if (getline(&command, &bufsize, stdin) == -1)
 		{
-			start++;
+			break;
 		}
+		command[strcspn(command, "\n")] = '\0';
 
-		int end = strlen(token) - 1;
+		char *token = strtok(command, ";");
 
-		while (end >= start && (token[end] == ' ' || token[end] == '\t' || token[end] == '\n'))
+		while (token != NULL)
 		{
-			token[end] = '\0';
-			end--;
-		}
+			execute_command(token);
 
-		if (strlen(token) > 0)
-		{
-			int status = system(token);
-
-			if (status != 0)
-			{
-				printf("Command execution failed: %s\n", token);
-			}
+			token = strtok(NULL, ";");
 		}
-		token = strtok(NULL, ";");
 	}
+	free(command);
 	return (0);
 }

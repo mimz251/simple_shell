@@ -1,46 +1,101 @@
-#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <shell.h>
+#include <string.h>
+#include <dirent.h>
+#include <unistd.h>
 
 /**
- * main - entry point
- * Return: 0 success
- * else 1 failure
+ * main - function that handles printing of directory in variable
+ * Retur: 0 success
+ * else 1 fail
  */
+/* Linked list node to store the directories*/
+struct PathNode
+{
+	char *directory;
+	struct PathNode *next;
+};
+
+/* Function to free the linked list memory*/
+
+void free_path_list(struct PathNode *head)
+{
+	struct PathNode *current = head;
+
+	while (current != NULL)
+	{
+		struct PathNode *next = current->next;
+
+		free(current->directory);
+		free(current);
+		current = next;
+	}
+}
+
 int main(void)
 {
-	/*accessing the directory*/
-	DIR *directory;
+	char *path_env = getenv("PATH");
 
-	/*store pointer*/
-	struct dirent *entry;
-
-	directory = opendir("."); /*open directory*/
-
-	if (directory == NULL)
+	if (path_env == NULL)
 	{
-		printf("Can't open directory.\n");
+		printf("PATH environment variable is not set.\n");
 		return (1);
 	}
 
-	while ((entry = readdir(directory)) != NULL)
-	{
-		if (entry->d_type == DT_REG)
-		{
-			printf("File: %s\n", entry->d_name);
-		}
+	struct PathNode *head = NULL;
+	struct PathNode *tail = NULL;
 
-		else if (entry->d_type == DT_DIR)
-		{
-			printf(" dir: %s\n", entry->d_name);
-		}
-	}
-	if (closedir(directory) == -1)
+	char *path_copy = strdup(path_env);
+
+	if (path_copy == NULL)
 	{
-		printf("Error closing directory.\n");
+		perror("strdup");
 		return (1);
 	}
+
+	char *path_token = strtok(path_copy, ":");
+
+	while (path_token != NULL)
+	{
+		struct PathNode *new_node = (struct PathNode *)malloc(sizeof(struct PathNode));
+
+		if (new_node == NULL)
+		{
+			perror("malloc");
+			free_path_list(head);
+			free(path_copy);
+			return (1);
+		}
+
+		new_node->directory = strdup(path_token);
+		new_node->next = NULL;
+
+		if (head == NULL)
+		{
+			head = new_node;
+			tail = new_node;
+		}
+		else
+		{
+			tail->next = new_node;
+			tail = new_node;
+		}
+
+		path_token = strtok(NULL, ":");
+	}
+
+	free(path_copy);
+
+	/* Print each directory in the PATH*/
+	struct PathNode *current = head;
+
+	while (current != NULL)
+	{
+		printf("%s\n", current->directory);
+		current = current->next;
+	}
+
+	free_path_list(head);
 
 	return (0);
 }

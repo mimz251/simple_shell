@@ -2,71 +2,86 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <shell.h>
+
+#define max_command_length 200
+
+/**
+ * main - function that handles logic operator
+ * retur: 0 succes
+ * else 1 fail
+ */
+
+int execute_command(char *command)
+{
+	int status = system(command);
+	return (status);
+}
 
 int main(void)
 {
-	sstream ss;
-	char command[1000];
+	char *command = NULL;
+	size_t bufsize = 0;
 
-	printf("Enter: ");
-	ss(command, sizeof(command), stdin);
-
-	char *token = strtok(command, "&|");
-	int last_status = 0;
-
-	while (token != NULL)
+	while (1)
 	{
-		int start = 0;
-
-		while (token[start] == ' ' || token[start] == '\t')
+		printf("alex@~$ ");
+		if (getline(&command, &bufsize, stdin) == -1)
 		{
-			start++;
+			break;
 		}
+		command[strcspn(command, "\n")] = '\0';
 
-		int end = strlen(token) - 1;
-
-		while (end >= start && (token[end] == ' ' || token[end] == '\t' || token[end] == '\n'))
+		if (strcmp(command, "exit") == 0)
 		{
-			token[end] = '\0';
-			end--;
+			break;
 		}
-
-		if (strlen(token) > 0)
+		else
 		{
-			int status = system(token);
+			char *token = strtok(command, " ");
+			int result = 1;
 
-			last_status = status;
-		}
-
-		token = strtok(NULL, "&|");
-
-		if (token != NULL)
-		{
-			if (token[0] == '&')
+			while (token != NULL)
 			{
-				if (last_status == 0)
+				if (strcmp(token, "&&") == 0)
 				{
-					token++;
+					token = strtok(NULL, " ");
+					if (token == NULL)
+					{
+						break;
+					}
+					result = execute_command(token);
+					if (result != 0)
+					{
+						break;
+					}
+				}
+				else if (strcmp(token, "||") == 0)
+				{
+					token = strtok(NULL, " ");
+					if (token == NULL)
+					{
+						break;
+					}
+					result = execute_command(token);
+					if (result == 0)
+					{
+						break;
+					}
 				}
 				else
 				{
-					token = strtok(NULL, "|");
+					result = execute_command(token);
+					if (result != 0)
+					{
+						break;
+					}
 				}
-			}
-			else if (token[0] == '|')
-			{
-				if (last_status != 0)
-				{
-					token++;
-				}
-				else
-				{
-					token = strtok(NULL, "&");
-				}
+				token = strtok(NULL, " ");
 			}
 		}
 	}
+
+	free(command);
 
 	return (0);
 }

@@ -1,45 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define max_command_length 200
-#include <shell.h>
+
 /**
  * main - this function allows a comment in the shell
  * Return: 0
  */
+
 int main(void)
 {
-	sstream ss;
-	char command[max_command_length];
+	char *command = NULL;
+	size_t bufsize = 0;
 
 	while (1)
 	{
 		printf("$ ");
-		ss(command, sizeof(command), stdin);
+		if (getline(&command, &bufsize, stdin) == -1)
+		{
+			break;
+		}
 
-		command[strcspn(command, "\n")] = '\0';/*removes trailing space*/
+		command[strcspn(command, "\n")] = '\0';
 
+		char *comment_pos = strchr(command, '#');
+
+		if (comment_pos != NULL)
+		{
+			*comment_pos = '\0';
+		}
 		if (strcmp(command, "exit") == 0)
 		{
-			break;/*Exit the shell*/
+			break;
 		}
 		else
 		{
-			char *comment_pos = strchr(command, '#');
-
-			if (comment_pos != NULL)
-			{
-				*comment_pos = '\0';
-			}
-
 			int status = system(command);
 
 			if (status != 0)
 			{
-				printf("Command execution failed.\n");
+				printf("failed.\n");
 			}
 		}
 	}
-
+	free(command);
 	return (0);
 }

@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <shell.h>
 
 #define max_command_length 200
 
@@ -10,64 +9,70 @@
  * main -  function that allows the cd command to work in shell
  * Return: 0 success
  */
+
 int main(void)
 {
-	sstream ss;
-	char command[max_command_length];
+	char *command = NULL;
+	size_t bufsize = 0;
 
 	while (1)
 	{
 		printf("$ ");
-		ss(command, sizeof(command), stdin);
-
-		command[strcspn(command, "\n")] = '\0';
-
-		if (strcmp(command, "exit") == 0)
+		if (getline(&command, &bufsize, stdin) == -1)
 		{
 			break;
 		}
-		else if (strncmp(command, "cd ", 3) == 0)
-		{
-			const char *path = command + 3;
+		command[strcspn(command, "\n")] = '\0';
 
-			if (strcmp(path, "-") == 0)
+		char *token = strtok(command, " ");
+		char *cmd = token;
+
+		token = strtok(NULL, " ");
+
+		char *arg = token;
+
+		if (cmd != NULL && strcmp(cmd, "cd") == 0)
+		{
+			if (arg == NULL)
 			{
-				const char *prev_dir = getenv("OLDPWD");
+				arg = getenv("HOME");
+			}
+			else if (strcmp(arg, "-") == 0)
+			{
+				char *prev_dir = getenv("OLDPWD");
 
 				if (prev_dir != NULL)
 				{
-					path = prev_dir;
+					arg = prev_dir;
 				}
 				else
 				{
-					printf("No previous directory found.\n");
+					printf("cd: OLDPWD not set\n");
 					continue;
 				}
 			}
+			char *getcwd(char *buf, size_t size);
 
-			if (chdir(path) == 0)
+			if (getcwd(cmd, sizeof(cmd)) == NULL)
 			{
-				char current_dir[max_command_length];
-
-				if (getcwd(current_dir, sizeof(current_dir)) != NULL)
+				perror("getcwd");
+				continue;
+			}
+			setenv("OLDPWD", cmd, 1);
+			if (chdir(arg) != 0)
+			{
+				perror("cd");
+			}
+			else
+			{
+				if (getcwd(cmd, sizeof(cmd)) != NULL)
 				{
-					setenv("PWD", current_dir, 1);
+					setenv("PWD", cmd, 1);
 				}
 				else
 				{
 					perror("getcwd");
 				}
-				char prev_dir[max_command_length];
-
-				if (getenv("PWD") != NULL)
-				{
-					strncpy(prev_dir, getenv("PWD"), sizeof(prev_dir));
-					setenv("OLDPWD", prev_dir, 1);
-				}
-			}
-			else
-			{
-				perror("cd");
 			}
 		}
 		else
@@ -76,10 +81,11 @@ int main(void)
 
 			if (status != 0)
 			{
-				printf("Command failed.\n");
+				printf("failed.\n");
 			}
 		}
 	}
+	free(command);
 
 	return (0);
 }

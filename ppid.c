@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <unistd.h>
-#include <shell.h>
 /**
  * main - gives the process id of child and parent
  * pid - process id

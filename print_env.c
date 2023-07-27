@@ -1,38 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#inclde <shell.h>
 
-/**
- * main - entry point
- * Return: 0 success
- */
-void print_environment(void)
-{
-	for (int i = 0; environ[i] != NULL; i++)
-	{
-		printf("%s\n", environ[i]);
-	}
-}
+extern char **environ;
 
 int main(void)
 {
-	sstream ss;
-	char command[1000];
+	char *command = NULL;
+	size_t bufsize = 0;
 
 	while (1)
 	{
 		printf("$ ");
-		ss(command, sizeof(command), stdin);
+		if (getline(&command, &bufsize, stdin) == -1)
+		{
+			break;
+		}
+
 		command[strcspn(command, "\n")] = '\0';
 
-		if (strcmp(command, "exit") == 0)
+		if (strcmp(command, "env") == 0)
 		{
-			break; /*Exit the shell*/
+			char **env_var = environ;
+
+			while (*env_var != NULL)
+			{
+				printf("%s\n", *env_var);
+				env_var++;
+			}
 		}
-		else if (strcmp(command, "env") == 0)
+		else if (strcmp(command, "exit") == 0)
 		{
-			print_environment();
+			break;
 		}
 		else
 		{
@@ -40,10 +39,12 @@ int main(void)
 
 			if (status != 0)
 			{
-				printf("Command execution failed.\n");
+				printf("failed.\n");
 			}
 		}
 	}
+
+	free(command);
 
 	return (0);
 }
